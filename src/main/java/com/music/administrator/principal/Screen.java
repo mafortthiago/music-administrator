@@ -1,18 +1,26 @@
 package com.music.administrator.principal;
 
-import java.util.Scanner;
+import com.music.administrator.repository.ArtistRepository;
+import com.music.administrator.repository.MusicRepository;
+import org.springframework.stereotype.Component;
 
+import java.util.Scanner;
+@Component
 public class Screen {
     private final Scanner scanner = new Scanner(System.in);
-    private final ScreenArtists screenArtists = new ScreenArtists();
-    private final ScreenMusics screenMusics = new ScreenMusics();
+    private final ScreenArtists screenArtists;
+    private final ScreenMusics screenMusics;
+
+    public Screen(ArtistRepository artistRepository, MusicRepository musicRepository) {
+        this.screenArtists = new ScreenArtists(artistRepository);
+        this.screenMusics = new ScreenMusics(musicRepository, artistRepository);
+    }
 
     private String exibeMenu(){
         return """
                 *** Music administrator ***
                 | 1 | Managing artists
                 | 2 | Managing music
-                | 3 | Find music by artist
                 
                 | 0 | Terminate
                 
@@ -24,6 +32,7 @@ public class Screen {
         while (opcao != 0){
             System.out.println(exibeMenu());
             opcao = scanner.nextInt();
+            scanner.nextLine();
             switch (opcao){
                 case 1:
                     screenArtists.menu();
